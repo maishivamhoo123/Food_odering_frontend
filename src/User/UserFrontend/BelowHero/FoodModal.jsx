@@ -5,23 +5,23 @@ import "./FoodModal.css";
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const FoodModal = ({ food, onClose }) => {
-  if (!food) return null; // ✅ prevent crash if no food selected
+  if (!food) return null;
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
 
-  const FIXED_AMOUNT = 1.20; // USD amount PayPal will accept
-  const ITEM_NAME = food.name || "Food Order";
+  const FIXED_AMOUNT = 1.20; // USD
+  const ITEM_NAME = food.Food_name || "Food Order";
 
   const handleBuyNow = async () => {
     setIsProcessing(true);
     setPaymentStatus(null);
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/payment/create-order`, // ✅ using env
-        { itemName: ITEM_NAME }
-      );
+      // Step 1: Start PayPal Order
+      const response = await axios.post(`${BASE_URL}/payment/create-order`, {
+        itemName: ITEM_NAME,
+      });
 
       const { approvalUrl } = response.data;
       const paypalWindow = window.open(
@@ -30,10 +30,27 @@ const FoodModal = ({ food, onClose }) => {
         "width=500,height=600"
       );
 
-      const interval = setInterval(() => {
+      // Step 2: Poll if PayPal closed
+      const interval = setInterval(async () => {
         if (paypalWindow?.closed) {
           clearInterval(interval);
-          setPaymentStatus("success");
+
+          try {
+            // Step 3: Create Order in Backend (after payment success)
+            await axios.post(`${BASE_URL}/order/create`, {
+              foodId: food._id, // from schema
+              customerName: "John Doe", // TODO: Replace with logged-in user
+              customerAddress: "123 Main Street", // TODO: Replace with user input/profile
+              restaurantId: food.restaurantId,
+              dropLocation: "Office, Downtown", // TODO: Replace with live location/choice
+            });
+
+            setPaymentStatus("success");
+          } catch (orderErr) {
+            console.error("Order creation failed:", orderErr);
+            setPaymentStatus("error");
+          }
+
           setIsProcessing(false);
         }
       }, 1000);
@@ -58,11 +75,11 @@ const FoodModal = ({ food, onClose }) => {
 
         <img
           src={food.image || "https://source.unsplash.com/400x400/?food"}
-          alt={food.name || "Food"}
+          alt={food.Food_name || "Food"}
           className="modal-image"
         />
 
-        <h3>{food.name || "Food"}</h3>
+        <h3>{food.Food_name || "Food"}</h3>
         <p className="modal-price">Price: ${FIXED_AMOUNT} USD</p>
 
         <button
@@ -78,7 +95,7 @@ const FoodModal = ({ food, onClose }) => {
           <div className="payment-popup-overlay">
             <div className="payment-popup success">
               <h3>Payment Successful!</h3>
-              <p>Thank you for your order of {food.name || "Food"}.</p>
+              <p>Thank you for your order of {food.Food_name || "Food"}.</p>
               <button onClick={closePaymentMessage}>OK</button>
             </div>
           </div>
