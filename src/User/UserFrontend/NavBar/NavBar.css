@@ -1,0 +1,105 @@
+/* NavBar.css */
+
+/* Overall navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 40px;
+  background-color: #fc8019; /* Swiggy Orange */
+  top: 0;
+  z-index: 1000;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* Left side (brand/logo) */
+.navbar-left h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff; /* White like Zomato logo */
+  text-transform: lowercase; /* Zomato style */
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+/* Right side */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Location button */
+.location-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.location-btn:hover {
+  opacity: 0.8;
+}
+
+/* Cart */
+.cart {
+  cursor: pointer;
+  font-weight: 600;
+  color: #ffffff;
+  transition: opacity 0.2s ease;
+}
+
+.cart:hover {
+  opacity: 0.8;
+}
+
+/* Profile */
+.profile {
+  cursor: pointer;
+  font-weight: 600;
+  color: #ffffff;
+  transition: opacity 0.2s ease;
+}
+
+.profile:hover {
+  opacity: 0.8;
+}
+
+/* Cart badge */
+.cart::after {
+  content: attr(data-count);
+  position: relative;
+  top: -10px;
+  left: -5px;
+  background: #ffffff;
+  color: #fc8019;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 20px;
+  }
+
+  .navbar-left h2 {
+    font-size: 22px;
+  }
+
+  .navbar-right {
+    gap: 16px;
+    font-size: 14px;
+  }
+}
