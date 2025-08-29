@@ -1,35 +1,263 @@
-/* Background styling */
-.frontpage-container {
-  height: 100vh;
-  width: 100%;
-  background: linear-gradient(to bottom right, #a0dfff, #d0f4ff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ===== Reset & base ===== */
+* { 
+  box-sizing: border-box; 
+}
+html, body, #root { 
+  height: 100%; 
+}
+body {
+  margin: 0;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: #0b2942;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Box container */
+/* ===== Layout & background ===== */
+.frontpage {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 1200px at -10% -10%, #b3ecff 0%, #e6fbff 40%, transparent 41%),
+    radial-gradient(900px 900px at 110% 10%, #ffe6c7 0%, #fff3e5 45%, transparent 46%),
+    linear-gradient(135deg, #a0dfff 0%, #d0f4ff 50%, #f7fcff 100%);
+}
+
+/* ===== Floating food items animation (Updated) ===== */
+.frontpage::before {
+  content: "";
+  position: absolute;
+  inset: -10vh -10vw;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  background-repeat: no-repeat;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text y='48' font-size='48'>🍕</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><text y='46' font-size='46'>🍔</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='58' height='58'><text y='44' font-size='44'>🍛</text></svg>"), /* Biryani */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='54' height='54'><text y='40' font-size='40'>🥘</text></svg>"), /* Chole Bhature representation */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56'><text y='42' font-size='42'>🍹</text></svg>"), /* Cocktail */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='52'><text y='38' font-size='38'>🌯</text></svg>");
+  background-position: 8% 20%, 25% 10%, 60% 15%, 85% 25%, 40% 8%, 15% 30%;
+  animation: driftScatter 25s linear infinite alternate;
+}
+
+@keyframes driftScatter {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(2vw, -3vh) rotate(5deg); }
+}
+
+/* Centered content */
+.frontpage-inner {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* ===== Role cards ===== */
 .box-wrapper {
   display: flex;
-  gap: 30px;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
 }
 
-/* Individual box styling */
 .user-box {
-  background-color: white;
-  padding: 25px 40px;
-  border-radius: 12px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #0077aa;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(255, 255, 255, 0.9);
+
+  background-color: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #0b2942;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 12px;
+  min-width: min(100%, 240px);
+  max-width: 280px;
+  flex: 1 1 240px;
+
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(18, 86, 120, 0.15);
+  transition: transform 240ms ease, box-shadow 240ms ease;
+  outline: none;
+  animation: cardIn 600ms cubic-bezier(.2,.8,.2,1) both;
 }
 
-/* Hover effect */
+@keyframes cardIn {
+  0% { transform: translateY(16px) scale(.98); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.user-icon {
+  grid-row: span 2;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+.user-svg-icon { 
+  width: 36px; 
+  height: 36px; 
+}
+.user-texts { 
+  display: grid; 
+  gap: 2px; 
+}
+.user-title { 
+  font-weight: 700; 
+  font-size: 17px; 
+}
+.user-desc { 
+  font-size: 13px; 
+  color: #3a6d86; 
+}
+
 .user-box:hover {
-  background-color: #e0f7ff;
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(18, 86, 120, 0.2);
+}
+.user-box:active { 
+  transform: translateY(-2px) scale(.98); 
+}
+.user-box:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255,255,255,.95), 0 0 0 4px rgba(0,153,204,.5);
+  border-color: rgba(0,153,204,.6);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 12px 12px 20px;
+  color: #2e5b73;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Animated Scene ===== */
+.scene-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scene-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+  min-height: 300px;
+  max-height: 500px;
+  overflow: visible;
+}
+
+#road-path { 
+  fill: none; 
+  stroke: #bdc3c7; 
+  stroke-width: 45; 
+  stroke-linecap: round; 
+}
+#road-line { 
+  fill: none; 
+  stroke: #ecf0f1; 
+  stroke-width: 4; 
+  stroke-dasharray: 20 30; 
+}
+#delivery-partner-bg { 
+  animation: ride-linear 15s linear infinite; 
+}
+
+@keyframes ride-linear {
+  0% { transform: translateX(-150px); }
+  100% { transform: translateX(2020px); }
+}
+
+.building { 
+  fill: #d0e0e3; 
+  stroke: #a7b4b7; 
+  stroke-width:2; 
+}
+.building-darker { 
+  fill: #b8c8cc; 
+}
+.tree-trunk { 
+  fill: #8d6e63; 
+}
+.tree-leaves { 
+  fill: #66bb6a; 
+}
+.person-group { 
+  animation: gentle-bob 4s ease-in-out infinite alternate; 
+}
+
+@keyframes gentle-bob {
+    from { transform: translateY(0) rotate(-1deg); }
+    to { transform: translateY(-3px) rotate(1deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .box-wrapper { 
+    flex-direction: column; 
+    gap: 12px; 
+  }
+  /* Add these rules inside your existing @media (max-width: 768px) block */
+
+.user-box {
+  /* This prevents the button from stretching too wide */
+  max-width: 320px; 
+  width: 90%; /* Keeps it responsive on very small screens */
+  padding: 10px; /* Reduces the internal spacing */
+  gap: 10px;
+  grid-template-columns: 40px 1fr; /* Shrinks the icon column */
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.user-svg-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.user-title {
+  font-size: 16px; /* Makes the title text smaller */
+}
+
+.user-desc {
+  font-size: 12px; /* Makes the description text smaller */
+}
+  #delivery-partner-bg { 
+    transform: scale(0.8); 
+  }
+  #road-path { 
+    stroke-width: 35; 
+  }
 }
